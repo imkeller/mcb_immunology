@@ -13,7 +13,7 @@ This part of the course will start with a short introduction to the programming 
 - perform and understand gene set enrichment analysis
 - use Rmarkdown to create an analysis report
 
-** Teaching material:**
+**Teaching material:**
 
 - Introduction to R and Bioconductor 
 - Introduction the RNA sequencing and differential gene expression
@@ -44,7 +44,7 @@ In this part of the course we will explore the different steps of a ELISA to und
 
 | Time  | Monday 15.06.2020 | Tuesday 16.06.2020 | Wednesday 17.06.2020 |
 | ----- | ----------------- | ------------------ | -------------------- |
-| 8-12  | Lecture           | Lecture            | Lecture              |
+| 8-10  | Lecture           | Lecture            | Lecture              |
 | 10-12 | Intro RNAseq      | Introduction GSEA  | Intro ELISA          |
 | 12-13 |                   |                    |                      |
 | 13-16 | Tutorial DGE      | Tutorial DGE+GSEA  |  Tutorial ELISA      |
