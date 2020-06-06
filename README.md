@@ -15,8 +15,8 @@ This part of the course will start with a short introduction to the programming 
 
 **Teaching material:**
 
-- Introduction to R and Bioconductor 
-- Introduction the RNA sequencing and differential gene expression
+- [Introduction to R and Bioconductor](./RNAseq_DGEA/intro_R_Bioconductor.Rmd)
+- [Introduction the RNA sequencing and differential gene expression](./RNAseq_DGEA/intro_RNAseq_DGEA.Rmd)
 - Introduction to gene set enrichment analysis
 - Tutorial on analysis of immune population transcriptomics
 
@@ -39,6 +39,15 @@ In this part of the course we will explore the different steps of a ELISA to und
 - Introduction to data wrangling and graphical representation
 - Tutorial on analysis of ELISA data
 
+
+## Downloading the course material
+
+You can download the course material from this github repository, either by using the "Download" button on the top right, or by using git to clone the repository:
+
+```{bash}
+# in the command line on your computer
+git clone https://github.com/imkeller/mcb_immunology.git
+```
 
 ## Schedule
 

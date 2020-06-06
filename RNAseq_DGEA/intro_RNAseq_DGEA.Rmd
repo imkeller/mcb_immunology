@@ -1,0 +1,48 @@
+---
+title: "RNAseq and DGEA to study expression profiles in immune cell subsets"
+author: Katharina Imkeller
+date: 15. June 2020
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# RNA sequencing workflow
+
+RNA sequencing (RNAseq) is a highly sensitive and accurate tool to measure gene expression accross the whole transcriptome.
+In a [typical RNAseq workflow](https://en.wikipedia.org/wiki/RNA-Seq#/media/File:Journal.pcbi.1004393.g002.png), 
+first the RNA is isolated from a tissue of interest or from a pool of cells that were previously
+isolated from the blood by FACS-sorting for example. The isolate contains all types of RNAs, such as small RNAs, tRNAs, 
+rRNAs and mRNAs. The mRNAs, which are most informative for differential gene expression analysis,
+can be selected during the following reverse transcription step by using polyA-tail specicific
+primers. The resulting cDNA is fragmented and size selected, in order to obtain DNA fragments of suitable length for
+sequencing. In a last step the next-generation sequencing adaptors are added to the DNA fragments, for example by ligation.
+
+In contrast to conventional Sanger sequencing, next-generation sequencing (NGS, alias high-throughput sequencing) allows to sequencing of many different
+DNA molecules in parralel. The most widely used NGS-technique is Illumina sequencing, where DNA molecules are loaded onto a chip. During amplification each nucleotide emits specific fluorescent signals, which are recorded by a fluroescence microscope. By deconvoluting these signals in x-y-space of the chip as well as in time, the sequence of every loaded DNA molecule can be determined. For a more detailed description of NGS, please refer to this [short online course by EMBL-EBI](https://www.ebi.ac.uk/training/online/course/ebi-next-generation-sequencing-practical-course/what-you-will-learn/what-next-generation-dna-).
+
+Further reading on RNA sequencing and analysis:
+[Kukurba and Montgomery (2015)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4863231/)
+
+# Mapping of read to the genome
+
+The raw data returned by the sequencer consists of DNA reads of a specific length (typically between 25 and 200 base pairs). These reads are then aligned and mapped to the reference genome in order to investigate, from which expressed gene/ mRNA molecule they originated. Counting the number of reads that can be aligned to every gene in the reference allows to quantify the expression of the different genes in the pool of cells that were sequenced.
+
+The standard way of aligning RNAseq read to the reference genome is using conventional alignment algorithms such as [TopHat](http://ccb.jhu.edu/software/tophat/manual.shtml). However recently, faster and more accurate tools such as [Salmon](https://combine-lab.github.io/salmon/) have been developed. 
+
+Browsing the human reference genome: 
+https://www.ensembl.org/Homo_sapiens/Info/Index
+
+
+# Differential gene expression analysis
+
+The read counts per gene can now be used as a basis for differential gene expression analysis. If for example you performed RNAseq for two different pools of cells A and B, you can compare the counts of the individual genes between both pools. Genes that have higher relative counts in pool A compared to pool B are likely to be upregulated in cell pool A for example. However it is of course important to use statistical testing to decide whether the count difference for a given gene is significant, or in other terms, higher then it would be expected due to random variation in the count data.
+
+Many methods have been developed to perform differential gene expression analysis and statistical testing, but in this course we will focus on the Bioconductor package [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html), which uses a negative binomial distribution to model the gene count data.
+
+# Expression profiles in immune cell subtypes
+
+
+
