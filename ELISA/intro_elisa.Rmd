@@ -1,0 +1,107 @@
+---
+title: "Introduction to antibody affinity measurements"
+author: Katharina Imkeller
+date: 15. June 2020
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Antibody diversity, specificity and affinity
+
+Antibodies are protein secreted by B cells upon an immune reaction to a specific antigen. 
+These antibodies are able to specifically recognize their target antigen - the antibody 
+affinity is thereby representative of the binding strength between antibody and antigen. 
+There is a very high diversity in the antibody molecules, i.e. every naive B cell produces 
+a unique antibody molecule. This diversity is enabled by somatic recombination of gene 
+segments that encode the antibody molecule, a process also known as V(D)J recombination, 
+which takes place during B cell development. In addition to V(D)J recombination, every 
+antibody is composed of a heavy and a light chain, which are also randomly paired during 
+B cell development. During an immune reaction, the antibody encoding genes undergo somatic 
+hypermutation, and eventually increase the affinity to their target antigen, a process 
+called affinity maturation. For a more detailed review of the underlying processes, 
+please refer to the lectures or this [review by K. Rajewski](https://www.nature.com/articles/381751a0.pdf).
+
+Different experimental methods exist to asses antibody-antigen binding and affinity, 
+among them the enzyme-linked immunosorbent assay (ELISA).
+
+## ELISA
+
+The enzyme-linked immunosorbent assay (ELISA) is one of the most frequently used 
+assays in immunological research. While it is not the most quantitative assay 
+(small linear range), it is cheap, has a high sensitivity, is easy to setup and 
+only requires a simple absorbance reader. 
+
+In this assay, high-binding plates (e.g. 96-well plates) are coated with the antigen 
+of interest and unspecific binding is blocked by incubation with blocking buffer 
+containing BSA. After washing, the antibodies of interest are added to the different 
+wells in different concentrations (e.g. 4$\mu$g/mL, 1$\mu$g/mL, 0.25$\mu$g/mL, 0.0625$\mu$g/mL) 
+and incubated. The plates are washed again and a secondary (anti-antibody) antibody is 
+added, which binds to the constant regions of the antibodies of interest. 
+The secondary antibody is typically coupled to an peroxidase-enzyme, which reacts 
+with a substrate that is added in the next step. The color change in the substrate 
+solution is more or less proportional to the amount of peroxidase, i.e. the amount 
+of secondary antibody, i.e. the amount of antibody of interest that has remained 
+bound to the coating antigen after washing.
+
+The color of the substrate can be quantified in a plate absorbance reader by measuring 
+the optical density at a given wavelength in every well of the plate. The absorbance 
+data can be summarized into "area under the curve" (AUC) to compare the antigen 
+reactivity of different antibodies. The AUC is calculated for the curve of optical 
+density (y-axis) versus antibody concentration (x-axis).
+
+Example of ELISA optical density and calculation of area under the curve:
+
+```{r}
+concentrations <- c(4,1,0.25,0.0625)
+non_reactive_ods <- c(0.1,0.06,0.05,0.04)
+reactive_ods <- c(1.8,1.4,0.6,0.2)
+
+abdf <- data.frame(ab_concentration = concentrations,
+           not_reactive = non_reactive_ods,
+           reactive = reactive_ods)
+```
+
+In the following plot the optical density for different antibody concentrations for a 
+reactive (red) and a non-reactive (black) antibody are shown:
+
+```{r}
+abdf %>%
+    ggplot(aes(x = log2(ab_concentration))) +
+    geom_line(aes(y = not_reactive)) +
+    geom_line(aes(y = reactive), color = "red") +
+    ylab("Optical density (OD)")
+```
+
+Define a AUC calculation function which takes the 4 optical densities as input: 
+
+```{r}
+calculate_auc <- function(ods) {
+    step_width <- 2
+    rectangular_part <- ods[2:4]*2
+    triangular_part <- ods[1:3] - ods[2:4] # *2 and /2 
+    sum(rectangular_part, triangular_part)
+}
+```
+
+AUC of the non-reactive antibody:
+```{r}
+calculate_auc(non_reactive_ods)
+```
+
+AUC of the reactive antibody:
+```{r}
+calculate_auc(reactive_ods)
+```
+
+
+
+
+
+
+
+
+

@@ -16,8 +16,7 @@ This part of the course will start with a short introduction to the programming 
 **Teaching material:**
 
 - [Introduction to R and Bioconductor](./RNAseq_DGEA/intro_R_Bioconductor.Rmd)
-- [Introduction the RNA sequencing and differential gene expression](./RNAseq_DGEA/intro_RNAseq_DGEA.Rmd)
-- Introduction to gene set enrichment analysis
+- [Introduction the RNA sequencing, differential gene expression and gene set enrichment analysis](./RNAseq_DGEA/intro_RNAseq_DGEA.Rmd)
 - Tutorial on analysis of immune population transcriptomics
 
 ## Part 2 – Automated analysis of an antibody reactivity assay
@@ -35,8 +34,8 @@ In this part of the course we will explore the different steps of a ELISA to und
 
 **Teaching material:**
 
-- Introduction to ELISA antibody reactivity assay
-- Introduction to data wrangling and graphical representation
+- [Introduction to ELISA antibody reactivity assay](./ELISA/intro_elisa.Rmd)
+- [Introduction to data handling and graphical representation](./ELISA/intro_tables_plots.Rmd)
 - Tutorial on analysis of ELISA data
 
 
@@ -54,9 +53,9 @@ git clone https://github.com/imkeller/mcb_immunology.git
 | Time  | Monday 15.06.2020 | Tuesday 16.06.2020 | Wednesday 17.06.2020 |
 | ----- | ----------------- | ------------------ | -------------------- |
 | 8-10  | Lecture           | Lecture            | Lecture              |
-| 10-12 | Intro RNAseq      | Introduction GSEA  | Intro ELISA          |
+| 10-12 | Intro RNAseq I    | Intro RNAseq II    | Intro ELISA          |
 | 12-13 |                   |                    |                      |
-| 13-16 | Tutorial DGE      | Tutorial DGE+GSEA  |  Tutorial ELISA      |
+| 13-16 | Tutorial RNAseq   | Tutorial RNAseq    |  Tutorial ELISA      |
 | 16-18 | Journal Club      | Journal Club       |  Journal Club        |
 
 ## Reports

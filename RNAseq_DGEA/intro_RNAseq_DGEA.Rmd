@@ -7,30 +7,43 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(clusterProfiler)
+library(org.Hs.eg.db)
 ```
 
 # RNA sequencing workflow
 
-RNA sequencing (RNAseq) is a highly sensitive and accurate tool to measure gene expression accross the whole transcriptome.
+RNA sequencing (RNAseq) is a highly sensitive and accurate tool to measure gene expression across the whole transcriptome.
 In a [typical RNAseq workflow](https://en.wikipedia.org/wiki/RNA-Seq#/media/File:Journal.pcbi.1004393.g002.png), 
 first the RNA is isolated from a tissue of interest or from a pool of cells that were previously
 isolated from the blood by FACS-sorting for example. The isolate contains all types of RNAs, such as small RNAs, tRNAs, 
 rRNAs and mRNAs. The mRNAs, which are most informative for differential gene expression analysis,
-can be selected during the following reverse transcription step by using polyA-tail specicific
+can be selected during the following reverse transcription step by using polyA-tail specific
 primers. The resulting cDNA is fragmented and size selected, in order to obtain DNA fragments of suitable length for
-sequencing. In a last step the next-generation sequencing adaptors are added to the DNA fragments, for example by ligation.
+sequencing. In a last step the next-generation sequencing adapters are added to the DNA fragments, for example by ligation.
 
-In contrast to conventional Sanger sequencing, next-generation sequencing (NGS, alias high-throughput sequencing) allows to sequencing of many different
-DNA molecules in parralel. The most widely used NGS-technique is Illumina sequencing, where DNA molecules are loaded onto a chip. During amplification each nucleotide emits specific fluorescent signals, which are recorded by a fluroescence microscope. By deconvoluting these signals in x-y-space of the chip as well as in time, the sequence of every loaded DNA molecule can be determined. For a more detailed description of NGS, please refer to this [short online course by EMBL-EBI](https://www.ebi.ac.uk/training/online/course/ebi-next-generation-sequencing-practical-course/what-you-will-learn/what-next-generation-dna-).
+In contrast to conventional Sanger sequencing, next-generation sequencing (NGS, alias high-throughput sequencing) 
+allows to sequencing of many different DNA molecules in parallel. The most widely used 
+NGS-technique is Illumina sequencing, where DNA molecules are loaded onto a chip. 
+During amplification each nucleotide emits specific fluorescent signals, which are 
+recorded by a fluorescence microscope. By deconvoluting these signals in x-y-space 
+of the chip as well as in time, the sequence of every loaded DNA molecule can be determined. 
+For a more detailed description of NGS, please refer to this [short online course by EMBL-EBI](https://www.ebi.ac.uk/training/online/course/ebi-next-generation-sequencing-practical-course/what-you-will-learn/what-next-generation-dna-).
 
 Further reading on RNA sequencing and analysis:
 [Kukurba and Montgomery (2015)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4863231/)
 
 # Mapping of read to the genome
 
-The raw data returned by the sequencer consists of DNA reads of a specific length (typically between 25 and 200 base pairs). These reads are then aligned and mapped to the reference genome in order to investigate, from which expressed gene/ mRNA molecule they originated. Counting the number of reads that can be aligned to every gene in the reference allows to quantify the expression of the different genes in the pool of cells that were sequenced.
+The raw data returned by the sequencer consists of DNA reads of a specific length 
+(typically between 25 and 200 base pairs). These reads are then aligned and mapped 
+to the reference genome in order to investigate, from which expressed gene/ mRNA molecule 
+they originated. Counting the number of reads that can be aligned to every gene in the 
+reference allows to quantify the expression of the different genes in the pool of cells that were sequenced.
 
-The standard way of aligning RNAseq read to the reference genome is using conventional alignment algorithms such as [TopHat](http://ccb.jhu.edu/software/tophat/manual.shtml). However recently, faster and more accurate tools such as [Salmon](https://combine-lab.github.io/salmon/) have been developed. 
+The standard way of aligning RNAseq read to the reference genome is using conventional alignment 
+algorithms such as [TopHat](http://ccb.jhu.edu/software/tophat/manual.shtml). 
+However recently, faster and more accurate tools such as [Salmon](https://combine-lab.github.io/salmon/) have been developed. 
 
 Browsing the human reference genome: 
 https://www.ensembl.org/Homo_sapiens/Info/Index
@@ -38,11 +51,116 @@ https://www.ensembl.org/Homo_sapiens/Info/Index
 
 # Differential gene expression analysis
 
-The read counts per gene can now be used as a basis for differential gene expression analysis. If for example you performed RNAseq for two different pools of cells A and B, you can compare the counts of the individual genes between both pools. Genes that have higher relative counts in pool A compared to pool B are likely to be upregulated in cell pool A for example. However it is of course important to use statistical testing to decide whether the count difference for a given gene is significant, or in other terms, higher then it would be expected due to random variation in the count data.
+The read counts per gene can now be used as a basis for differential gene 
+expression analysis. If for example you performed RNAseq for two different 
+pools of cells A and B, you can compare the counts of the individual genes 
+between both pools. Genes that have higher relative counts in pool A compared 
+to pool B are likely to be up-regulated in cell pool A for example. However it is of course 
+important to use statistical testing to decide whether the count difference for a given 
+gene is significant, or in other terms, higher then it would be expected due to random 
+variation in the count data.
 
-Many methods have been developed to perform differential gene expression analysis and statistical testing, but in this course we will focus on the Bioconductor package [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html), which uses a negative binomial distribution to model the gene count data.
+Many methods have been developed to perform differential gene expression analysis 
+and statistical testing, but in this course we will focus on the Bioconductor 
+package [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html), 
+which uses a negative binomial distribution to model the gene count data.
 
-# Expression profiles in immune cell subtypes
+## DESeq2 example
+
+We load example data from the [airway](http://bioconductor.org/packages/release/data/experiment/html/airway.html) 
+data package to illustrate DESEq2 functions.
+The airway object contains read counts for an RNAseq experiment on four human 
+airway smooth muscle cell lines treated with dexamethasone. 
+
+```{r}
+library("airway")
+library(DESeq2)
+data("airway")
+
+colData(airway)
+```
+
+Import the dataset into DESeq2:
+
+```{r}
+dds <- DESeqDataSet(airway, design = ~ dex)
+```
+
+Run DESeq2 to find genes differentially expressed upon dexamethasone treatment:
+
+```{r}
+dds <- DESeq(dds)
+res <- results(dds)
+```
+All genes which are differentially expressed (signifcance level 0.05) are shown in blue.
+
+```{r}
+plotMA(res, ylim=c(-2,2))
+```
+
+
+
+# Gene set enrichment analysis
+
+Gene set enrichment analysis (GSEA) is a computational method to identify classes of 
+genes that are over-expressed in comparison to a large reference set of genes. 
+This type of functional enrichment analysis can help to interpret the biological 
+meaning results from differential gene expression analysis. For this purpose all 
+genes are annotated with biological functions or pathways. GSEA then uses statistical 
+approaches to identify significantly enriched groups of genes.
+
+## Reactome pathway collection
+
+The [reactome database](https://reactome.org/) is an open-source, manually curated 
+collection of biological pathways. The database consist of annotated proteins, complexes, 
+small molecules that are grouped into pathways according to their interaction in 
+biological reactions. The annotations from the Reactome pathway database can be used 
+to perform gene set enrichment analysis.
+
+The [Reactome pathway browser](https://reactome.org/PathwayBrowser/) gives an overview 
+over all pathways that have been described in humans for example and clusters them 
+according to their biological function (metabolism, immune systems, etc....). 
+Every pathway in the Reactome database is identified by a unique identifier: 
+Downstream TCR signaling for example can be found under the 
+ID [R-HSA-202424](https://reactome.org/PathwayBrowser/#/R-HSA-202424). 
+The different proteins involved in the process are listed under the "Molecules" tab.
+
+## Gene set enrichment analysis algorithm
+
+The Gene Set Enrichment Analysis (GSEA) is described in detail in 
+[Subramanian et al. 2005](https://www.pnas.org/content/102/43/15545).
+Genes are ranked based on their phenotype, GSEA then aggregates the per gene statistics 
+across genes within a gene set. Given a defined set of gene 
+(e.g., genes from the same Reactome pathway), the goal of GSEA is to determine 
+whether the members of S are randomly distributed throughout the ranked gene list 
+or primarily found at the top or bottom.
+
+There are three key elements of the GSEA method:
+
+1. Calculation of an **Enrichment Score** (ES), which represent the degree to which a 
+set S is over-represented at the top or bottom of the ranked list L. The score is 
+calculated by walking down the list L, increasing a running-sum statistic when we 
+encounter a gene in S and decreasing when it is not. The magnitude of the increment 
+depends on the gene statistics (e.g., correlation of the gene with phenotype). 
+The ES is the maximum deviation from zero encountered in the random walk.
+2. Estimation of **Significance Level** of ES. The p-value of the ES is calculated 
+using permutation test. Specifically, we permute the gene labels of the gene list L 
+and recompute the ES of the gene set for the permutated data, which generate a null 
+distribution for the ES. The p-value of the observed ES is then calculated relative 
+to this null distribution.
+3. Adjustment for Multiple Hypothesis Testing.
+
+
+## Gene set enrichment analysis using ReactomePA
+
+ReactomePA is a Bioconductor package that implements gene set enrichment analysis 
+using Reactome pathway annotations. The gene set enrichment functions are described 
+in the [ReactomePA vignette](https://bioconductor.org/packages/release/bioc/vignettes/ReactomePA/inst/doc/ReactomePA.html#gene-set-enrichment-analysis).
+
+```{r}
+library(ReactomePA)
+```
+
 
 
 

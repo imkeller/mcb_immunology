@@ -1,0 +1,206 @@
+---
+title: "Introduction data handling and graphical representation"
+author: Katharina Imkeller
+date: 15. June 2020
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DT)
+```
+
+# Data wrangling with dplyr
+
+dplyr is an R package that allows easy manipulation of data tables.
+A set of commonly used dplyr commands can be found on the following 
+summary: [dplyr cheatsheet](./data-transformation_cheatsheet.pdf).
+
+The dplyr functions are:
+
+* filter() picks cases based on their values.
+* summarise() reduces multiple values down to a single summary.
+* arrange() changes the ordering of the rows.
+* mutate() adds new variables that are functions of existing variables
+* select() picks variables based on their names.
+
+The following script illustrate how to use these functions on a dataset 
+containing information on different types of iris plants. This dataset 
+is just for illustration purposes, because it is especially well suited 
+to understand how dplyr is working. A similar introduction using a dataset 
+about Starwars characters can also be found here: https://dplyr.tidyverse.org/.
+
+Later on in the tutorial you will perform the same type of manipulations 
+on a dataset of antibody reactivity data.
+
+```{r}
+library(dplyr)
+```
+
+
+## Filtering data tables
+
+filter() picks cases (rows) based on their values.
+In all following example, the DT::datatable() function is there to display the
+tables in a readable way.
+
+```{r}
+DT::datatable(
+filter(iris, Species == "versicolor")
+)
+```
+
+Usage of the %>% pipe:
+```{r}
+DT::datatable(
+iris %>%
+    filter(Species == "versicolor")
+)
+```
+
+Filters can be combined:
+```{r}
+DT::datatable(
+iris %>%
+    # AND
+    filter(Species == "versicolor" & Petal.Width < 1.2) 
+)
+```
+
+```{r}
+DT::datatable(
+iris %>%
+    #  OR
+    filter(Species == "versicolor" | Petal.Width < 1.2) 
+)
+```
+
+# Summarizing and grouping
+
+summarise() reduces multiple values down to a single summary
+
+```{r}
+DT::datatable(
+iris %>%
+  summarise(
+    n = n(),
+    meanSW = mean(Sepal.Width, na.rm = TRUE)
+  ) 
+)
+```
+
+```{r}
+DT::datatable(
+iris %>%
+  group_by(Species) %>%
+    summarise(
+    n = n(),
+    meanSW = mean(Sepal.Width, na.rm = TRUE)
+  )
+)
+```
+
+
+arrange() changes the ordering of the rows
+
+```{r}
+DT::datatable(
+iris %>%
+  group_by(Species) %>%
+    summarise(
+    n = n(),
+    meanSW = mean(Sepal.Width, na.rm = TRUE)
+  ) %>%
+    arrange(meanSW)
+)
+```
+
+## Selecting columns
+
+select() picks variables based on their names.
+
+```{r}
+DT::datatable(
+iris %>%
+  select(Sepal.Width, Species)
+)
+```
+
+```{r}
+DT::datatable(
+iris %>%
+  select(Species, ends_with("Width"))
+)
+```
+
+
+## Adding columns (mutating the table)
+
+mutate() adds new variables that are functions of existing variables
+
+```{r}
+DT::datatable(
+iris %>%
+  mutate(Sepal.Ratio = Sepal.Width/Sepal.Length) 
+)
+```
+
+
+# Generating graphics using ggplot2
+
+ggplot2 is an R package for generating graphical representations of your data.
+A set of commonly used dplyr commands can be found on the following 
+summary: [ggplot2 cheatsheet](./data-visualization-2.1_cheatsheet.pdf).
+
+```{r}
+library(ggplot2)
+```
+
+A ggplot2 command consists of following elements:
+
+* a ggplot() function that has the dataset  (here iris) as first argument
+* an aesthetic mapping aes(), where you define the columns of the dataset 
+that should be used as x, y, color, size...
+* a layer, where you define what type of plotting functions should be used 
+(layers can be overlayed)
+
+The following code plots the sepal length as a function of sepal length. 
+Every dot corresponds to one row of the dataset iris.
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width)) +
+    geom_point()
+```
+
+The dots can be colored according to iris species:
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color=Species)) +
+    geom_point()
+```
+
+A faceting specification (e.g. facet_wrap()) can be used to split the data into several plots:
+
+```{r}
+ggplot(iris, aes(x = Sepal.Length, y = Sepal.Width, color=Species)) +
+    geom_point() +
+    facet_wrap(~Species)
+```
+
+The data can also be summarized into box-plots, by using the Species on the x axis:
+
+```{r}
+ggplot(iris, aes(x = Species, y = Sepal.Length)) +
+    geom_boxplot()
+```
+
+Overlaying dot-plots on top of the box-plot:
+
+```{r}
+ggplot(iris, aes(x = Species, y = Sepal.Length)) +
+    geom_boxplot() +
+    geom_jitter()
+```
+
+
+

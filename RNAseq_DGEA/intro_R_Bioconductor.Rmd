@@ -9,18 +9,23 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this course we will learn how to analyse large scale immunological data using R. R is a programming language and environment for scientific computing and graphics generation. A major aim of this course is to empower students to perform basic analyses on their own biological datasets. We will introduce various R community resources that will empower students to further develop their programming skills.
+In this course we will learn how to analyse large scale immunological data using R. 
+R is a programming language and environment for scientific computing and graphics generation. 
+A major aim of this course is to enable students to perform basic analyses on their own 
+biological datasets. To this purpose will introduce various R community resources that 
+will allow students to get support and further develop their programming skills.
 
 # RStudio and basic R commands
 
 ## Connecting to RStudio cloud
 
-In this course we will program our R scripts in an RStudio cloud environment. All packages that are needed for the course have been installed there.
+In this course we will program our R scripts in an RStudio cloud environment. 
+All packages that are needed for the course have been installed there.
 Please follow the link to the Course Space: 
 
 https://rstudio.cloud/spaces/73774/join?access_code=OicSZ6BeiynxBC7X%2F6VetC4OWstPLt9Hx330n08c
 
-You will have to register there, by creating an account or using an account of your choice, e.g. a google account.
+You will have to register there, by creating an account or using an account of your choice, e.g. a Google account.
 
 ## Basic R commands
 
@@ -60,33 +65,52 @@ Getting help for a specific function
 
 # Rmarkdown
 
-[Rmarkdown](https://rmarkdown.rstudio.com/) is a notebook interface, which allows you to generate reproducible and sharable report of your R analyses. The format of an Rmarkdown allows to integrate formated text, computational code, calculations and results as well as graphical representations into the same document. The output document can be generated as pdf or html file for example. In fact most of the materials used in this course use Rmarkdown format. 
+[Rmarkdown](https://rmarkdown.rstudio.com/) is a notebook interface, which allows 
+the generation of reproducible and sharable report of your R analyses. The format of 
+an Rmarkdown allows to integrate formatted text, computational code, calculations and 
+results as well as graphical representations into the same document. The output 
+document can be generated as pdf or html file for example. In fact most of the materials 
+used in this course use Rmarkdown format. 
 
-Formatting guidelines for Rmarkdown can be found in this [cheatsheet](https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf).
+Formatting guidelines for Rmarkdown can be found in this [Rmarkdown cheatsheet](./rmarkdown-2.0_cheatsheet.pdf).
 
 # Bioconductor
 
-Bioconductor is an open source software collection for Bioinformatics. It contains more than 1800 R packages for statistical analysis and comprehension of high-throughput biological data (transcriptomics, genomics, flow cytometry, proteomics, metabolomics...). Bioconductor packages are widely used (>1/2 million unique IP downloads / year) and highly cited (>33,000 PubMedCentral citations). In order to submit packages to the Bioconductor collection, they have to go through a review process that assures quality control.
+Bioconductor is an open source software collection for Bioinformatics. 
+It contains more than 1800 R packages for statistical analysis and comprehension 
+of high-throughput biological data (transcriptomics, genomics, flow cytometry, 
+proteomics, metabolomics...). Bioconductor packages are widely used 
+(>1/2 million unique IP downloads / year) and highly cited (>33,000 PubMedCentral citations). 
+In order to submit packages to the Bioconductor collection, they have to go through a 
+review process that assures quality control.
 
-The Bioconductor community offers a large number of open source resources to learn using packages and analysing data. Typical biological data analysis workflows such as RNAseq or proteomics for example can be found on the [workflow website](https://bioconductor.org/packages/release/BiocViews.html#___Workflow).
+The Bioconductor community offers a large number of open source resources to learn using 
+packages and analyzing data. Typical biological data analysis workflows such as RNAseq or 
+proteomics for example can be found on the [workflow website](https://bioconductor.org/packages/release/BiocViews.html#___Workflow).
 
-## Using Biostrings package
+## Using the Bioconductor Biostrings package
 
-Biological sequences
+[Biostrings](https://bioconductor.org/packages/release/bioc/html/Biostrings.html) is a package that 
+allows you to perform basic operations on biological sequences
+
 ```{r}
 dnasequence <- "ATGCAGTACGATCAGCAGTCAACCGTGGGGGGGACCCAG"
 ```
 
-Bioconductor package [Biostrings](https://bioconductor.org/packages/release/bioc/html/Biostrings.html)
+Loading the Biostrings package makes the package functions available in your programming environment.
+
 ```{r, message=FALSE}
 library(Biostrings)
 ```
+
+Define the above sequence as a DNA sequence
 
 ```{r}
 dnaobj <- DNAString(dnasequence)
 ```
 
-Translate sequence
+Translate the DNA sequence into protein sequence
+
 ```{r}
 translate(dnaobj)
 ```
