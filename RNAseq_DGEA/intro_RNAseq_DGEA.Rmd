@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(DT)
 library(clusterProfiler)
 library(org.Hs.eg.db)
 ```
@@ -67,23 +68,50 @@ which uses a negative binomial distribution to model the gene count data.
 
 ## DESeq2 example
 
-We load example data from the [airway](http://bioconductor.org/packages/release/data/experiment/html/airway.html) 
+We load example data from a study by [Monaco et al.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6367568/) 
 data package to illustrate DESEq2 functions.
-The airway object contains read counts for an RNAseq experiment on four human 
-airway smooth muscle cell lines treated with dexamethasone. 
+The data consists of RNA sequencing results for naive B cells and naive CD8 T cells. 
+
+Read in the data
+```{r}
+count_data <- read.csv("counts_CD8naive_Bnaive.csv")
+```
+
+Prepare the list of Entrez ids and Gene symbols, which will be used for 
+gene set enrichment analysis and annotation
 
 ```{r}
-library("airway")
-library(DESeq2)
-data("airway")
+entrez_ids <- count_data$ENTREZID
+symbols <- count_data$SYMBOL
+```
 
-colData(airway)
+Prepare the count matrix for input into DESeq2.
+Rownames should be gene identifiers.
+
+```{r}
+# We need to exclude the columns of the matrix that are not counts
+cts <- round(as.matrix(count_data[c(-1,-2,-3)]))
+rownames(cts) <- symbols
+```
+
+
+Prepare the coldata containing information about which cell type is
+contained in which column (column names should be self explanatory).
+
+```{r}
+coldata <- data.frame(sample = colnames(count_data[c(-1,-2,-3)]),
+                      population = c("CD8_naive","CD8_naive","CD8_naive","CD8_naive",
+                                     "B_naive","B_naive","B_naive","B_naive")
+)
 ```
 
 Import the dataset into DESeq2:
 
 ```{r}
-dds <- DESeqDataSet(airway, design = ~ dex)
+library(DESeq2)
+dds <- DESeqDataSetFromMatrix(countData = cts,
+                              colData = coldata,
+                              design = ~ population)
 ```
 
 Run DESeq2 to find genes differentially expressed upon dexamethasone treatment:
@@ -95,7 +123,7 @@ res <- results(dds)
 All genes which are differentially expressed (signifcance level 0.05) are shown in blue.
 
 ```{r}
-plotMA(res, ylim=c(-2,2))
+plotMA(res)
 ```
 
 
@@ -161,6 +189,60 @@ in the [ReactomePA vignette](https://bioconductor.org/packages/release/bioc/vign
 library(ReactomePA)
 ```
 
+We perform gene set enrichment analysis on the results from the above differential gene expression
+analysis. The stat column is a statistical measure computed by DESeq2 (similar to a fold change,
+but "corrected" for differences in overall expression) and will be used to rank the genes. 
 
+```{r}
+sortlist <- res$stat
+names(sortlist) <- entrez_ids
+```
+
+sorted_list is a sorted list of res$stat values. 
+The names of the list entries correspond to Entrez gene identifiersn (numerical).
+
+```{r}
+sorted_list <- sort(sortlist, decreasing = TRUE)
+head(sorted_list, n=10)
+```
+
+Perform gene set enrichment analysis using the gsePathway() function
+provided by Reactome PA.
+
+```{r}
+gse_result <- gsePathway(sorted_list,
+                pvalueCutoff=0.1)
+```
+
+The emapplot() function gives a graphical representation of the first n (in this
+case 20) enriched pathways.
+```{r}
+emapplot(gse_result , color="enrichmentScore", showCategory = 20)
+```
+
+
+In order to get a list of enriched pathways, we need to convert the result into an
+data frame format.
+
+```{r}
+gse_result_table <- as.data.frame(gse_result)
+
+#DT::datatable(gse_result_table)
+```
+
+Muscle contraction
+```{r}
+gseaplot(gse_result , geneSetID = "R-HSA-983695")
+```
+
+```{r}
+viewPathway("Antigen activates B Cell Receptor (BCR) leading to generation of second messengers", 
+            readable=TRUE, foldChange=sorted_list[!duplicated(names(sorted_list))])
+```
+
+
+```{r}
+plotCounts(dds, gene="CD19", intgroup="population")
+```
 
 

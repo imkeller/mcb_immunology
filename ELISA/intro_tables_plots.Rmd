@@ -115,6 +115,20 @@ iris %>%
 )
 ```
 
+Obtain the reverse order by adding the desc() function
+
+```{r}
+DT::datatable(
+iris %>%
+  group_by(Species) %>%
+    summarise(
+    n = n(),
+    meanSW = mean(Sepal.Width, na.rm = TRUE)
+  ) %>%
+    arrange(desc(meanSW))
+)
+```
+
 ## Selecting columns
 
 select() picks variables based on their names.

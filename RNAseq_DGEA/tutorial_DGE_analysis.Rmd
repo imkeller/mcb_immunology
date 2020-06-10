@@ -1,0 +1,175 @@
+---
+title: "Differential gene expression analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data provided in this tutorial
+
+We will use data generated in a study by [Monaco et al.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6367568/).
+The prepared count matrices are located in the R Studio Project you are currently working on.
+There is one files containing the RNAseq count data of sorted plasmablasts and naive B cells of 4 individuals:
+counts_plasmablast_Bnaive.csv
+
+## Import of RNAseq count data to R
+
+Take a look at the count file (either in R, or download + text editor).
+What do the rows and columns represent?
+
+In the follwong you will load the data and prepare it for analysis, similar to what
+was explained in the script.
+
+Read in the data
+```{r}
+
+```
+
+Prepare the list of Entrez ids and Gene symbols, which will be used for 
+gene set enrichment analysis and annotation
+
+```{r}
+
+```
+
+Prepare the count matrix for input into DESeq2.
+Rownames should be gene identifiers.
+
+```{r}
+
+```
+
+
+Prepare the coldata containing information about which cell type is
+contained in which column (column names should be self explanatory).
+
+```{r}
+
+```
+
+## Run DESeq2
+
+We will use the DESeq2 package to find differentially expressed genes upon dexamethasone treatment.
+The DESeq2 user guide can be found on the Bioconductor website.
+
+Load the DESeq2 package
+```{r}
+
+```
+
+Use the DESeqDataSetFromMatrix() function to generate a DESeq dataset. We want to compare plasmablasts and naive B cells
+```{r}
+
+```
+
+Run the DESeq() function to perform the statistical test.
+
+```{r}
+
+```
+
+Use the results() function to get the statistics of testing plasmablasts and naive B cells gene expression.
+Store the result in a variable called 'res'.
+
+```{r}
+
+```
+
+Take a look at the results table.
+What information do the different columns contain?
+
+```{r}
+
+```
+
+You can take a look at the column decriptions using the following code:
+```{r}
+
+```
+
+## Some visualization functions of DESeq2
+
+Use the plotMA() function to visualize the gene fold changes.
+
+```{r}
+
+```
+
+The order() function can be applied in the following manner to order the results table by mean gene count:
+
+```{r}
+
+```
+
+Use the order() function to find the genes with the lowest and highest log2Fold Changes. 
+What are their Benjamini-Hochberg adjusted p-values?
+Would you say that these genes are significanlty up- and downregulated?
+
+Lowest log2FC:
+
+```{r}
+
+```
+
+
+Highest log2FC:
+
+```{r}
+
+```
+With a significance cutoff of 5% both genes are significantly differently expressed.
+
+
+For both genes independently use the plotCount() function. What does the plot show?
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+# Gene set enrichment analysis
+
+Load the ReactomePA library
+```{r}
+
+```
+
+Generated a sorted list of the res$stat results. 
+The names of the list need to be entrez identifiers.
+
+```{r}
+
+```
+
+Run gsePathway().
+
+```{r}
+
+```
+
+Plot some of the enriched pathways using emapplot().
+
+```{r}
+
+```
+
+Generate a results table
+
+```{r}
+
+```
+
+Choose 3 pathways with positive and 3 pathways with negative enrichment score. 
+Use gseqplot (and maybe viewPathway) to illustrate their enrichment. 
+Attention: viewPathway may not work in some cases and also, sometimes the result is not readeble, when
+there are too many genes.
+Use plotCounts() to show the expression levels of selected genes.
+Which of the two cell types seems to divide faster?
+Which one has a higher metabolic activity?
+Do plasmablasts seem to have active B cell signaling?

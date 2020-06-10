@@ -1,0 +1,159 @@
+---
+title: "Automated analysis of antibody reactivity data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Dataset on antibodies in human Malaria
+
+The file csp_antibodies.csv contains sequence information and ELISA data from 178 antibodies from donors undergoing controlled human malaria infection [Murugan et al. 2010](https://www.nature.com/articles/s41591-020-0881-9). The Circumsporozoite Protein (CSP) is the major surface antigen of Plasmodium falciparum (Pf), the most frequent causative pathogen of human Malaria.
+
+### General questions concerning the dataset
+
+With the help of the original publication by [Murugan et al. 2010](https://www.nature.com/articles/s41591-020-0881-9), and with the knowledge from the lecture on B cells, please answer the following questions.
+
+CHMI and ELISA:
+
+* What is controlled human malaria infection (CHMI)? What do the different entries in the "Pf_exposure" column stand for (I, II, III, C)?
+* Shortly summarize, how the ELISA was performed. What does the are under the curve (AUC) stand for?
+* List the different CSP-derived epitopes that are used in the ELISA measurements. What are their full protein sequences?
+* What information does the column Pf_inhibition contain, and how was it measured?
+
+Antibody sequence information:
+
+* What is the overall structure of an antibody molecule? How is the protein encoded in the B cell genome?
+* Which biological processes underly the diversity of antibody molecules?
+* What do the following columns in the dataset stand for: IGHV, IGHD, IGHJ, light, IGKV_IGLV, IGKJ_IGLJ, IGHC, IGHV_SHM, IGKV_IGLV_SHM? (Hint: column "light" indicated, whether the antibody has a kappa or lambda light chain, light chains can be encoded in IGK or IGL loci.)
+
+
+### Exploratory data analysis
+
+Load the libraries for dplyr and ggplot2:
+
+```{r}
+
+```
+
+Read the csv table into a table object (use the read.csv() function):
+
+```{r}
+
+```
+
+### Antibody sequence information, repertoire analysis
+
+How many antibodies are there that have a kappa light chain? How many have a lambda light chain?
+
+```{r}
+
+```
+
+How many antibodies does the dataset contain per donor?
+
+```{r}
+
+```
+
+Which is the most prominent IGHV segment?
+
+```{r}
+
+```
+
+What is the most frequent combination of IGHV and IGKV or IGLV genes?
+
+```{r}
+
+```
+
+Antibody isotype, or constant segment (IGHC): using the summary function followed 
+by a ggplot2 command with the geom_col() function, 
+plot the number of antibodies from each isotype.
+Which is the most frequent IGHC segment in the dataset?
+
+```{r}
+
+```
+
+### ELISA reactivity to different epitopes
+
+For the different antigens tested in ELISA, which donors show the most reactive antibodies?
+Use geom_boxplot() and/or geom_jitter().
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+Using the filter() function and an AUC threshold of 5, 
+can you extract the two groups of antibodies shown in Figure 1c, pannels 1 and 2 
+(NPDN/NVDP binders and NVDP/NANP binders)?
+
+How do these two groups differ in terms of their light chain usage and IGHV usage?
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
+
+### Pf inhibition
+
+Plot the Pf inhibition for every donor (geom_boxplot() or geom_jitter() functions).
+Which donor has the most protective antibodies?
+
+```{r}
+
+```
+
+Using the cor() function within a summarize command, calculate the
+correlation of Pf inhibition and ELISA AUC for every antigen.
+
+```{r}
+
+```
+
+Plot the correlation of Pf inhibition and NANP for the
+highest and lowest correlation found in the previous calculation.
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+## Summary and conclusion
+
+Shortly describe the typical sequence properties of anti-CSP antibodies that you found in part 1 of the
+above analysis.
+
+Considering the second part of the analysis, which donors seem to have the best antibody
+response? Which of the CSP epitopes seems to bound most frequently by protective antibodies?
