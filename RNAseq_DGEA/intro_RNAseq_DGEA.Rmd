@@ -8,8 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(DT)
-library(clusterProfiler)
-library(org.Hs.eg.db)
 ```
 
 # RNA sequencing workflow
@@ -187,6 +185,7 @@ in the [ReactomePA vignette](https://bioconductor.org/packages/release/bioc/vign
 
 ```{r}
 library(ReactomePA)
+library(org.Hs.eg.db, lib.loc="../Rpackages")
 ```
 
 We perform gene set enrichment analysis on the results from the above differential gene expression
