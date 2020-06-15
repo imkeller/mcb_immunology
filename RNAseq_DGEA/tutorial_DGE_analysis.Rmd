@@ -135,7 +135,8 @@ For both genes independently use the plotCount() function. What does the plot sh
 
 # Gene set enrichment analysis
 
-Load the ReactomePA library
+Load the ReactomePA library and the
+org.Hs.eg.db (which in the RStudio cloud has to be loaded from ../Rpackages/ )
 ```{r}
 
 ```
