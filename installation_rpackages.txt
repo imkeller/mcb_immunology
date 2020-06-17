@@ -1,0 +1,5 @@
+install.packages(c("knitr","DT","BiocManager"))
+BiocManager::install("ReactomePA")
+BiocManager::install("DESeq2")
+BiocManager::install("Biostrings")
+BiocManager::install("org.Hs.eg.db")

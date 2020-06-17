@@ -1,0 +1,97 @@
+---
+title: "examples plots"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+```
+
+Use of three datasets for data exploration:
+
+*starwars
+*mtcars
+*storms
+
+Unnesting the nested columns in starwars dataframe
+
+```{r}
+library(tidyr)
+
+starwars %>% unnest(films) %>%
+  unnest(starships)
+  
+```
+
+Correlation of height and body weight 
+
+```{r}
+starwars %>%
+  filter(mass < 1000) %>%
+  ggplot(aes(x = height, y = mass, color = gender)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+starwas_nona <- starwars %>%
+  drop_na()
+  
+cor(starwas_nona$height, starwas_nona$mass)
+
+lm(starwas_nona$mass ~ starwas_nona$height)
+```
+
+
+Ordering the x axis with numerical months
+
+```{r}
+storms %>%
+  ggplot(aes(x = as.character(month), y = pressure, color = status)) +
+  geom_boxplot() +
+  scale_x_discrete(limits = seq(1,9)) +
+  xlab("Month")
+```
+
+Rotating the x axis labels
+
+```{r}
+storms %>%
+  ggplot(aes(x = as.character(year), y = long)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Specifying aes() in the different functions/layers
+
+```{r}
+storms %>%
+  ggplot(aes(x = lat, y = long)) + 
+  geom_point(aes(color = status)) +
+  geom_smooth()
+
+storms %>%
+  ggplot(aes(x = lat, y = long)) + 
+  geom_point(color = 'red') +
+  geom_smooth()
+```
+
+Converting a numeric coloring to a cathegorical coloring
+
+```{r}
+mtcars %>%
+  ggplot(aes( x = disp, y = wt, color = as.factor(cyl))) +
+  geom_point()
+```
+
+Difference between & and && operators
+
+```{r}
+a <- c(TRUE,TRUE,TRUE)
+b <- c(FALSE,FALSE,TRUE)
+
+a & b
+a && b
+
+a | b
+a || b
+```

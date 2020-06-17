@@ -1,6 +1,6 @@
 ---
 title: "Introduction to antibody affinity measurements"
-author: Katharina Imkeller
+    author: Katharina Imkeller
 date: 15. June 2020
 output: html_document
 ---
